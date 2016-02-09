@@ -49,6 +49,18 @@ class NewReference():
                                                    end, flank=flank)
         else:
             return self.identify_seq_location(seq)
+    
+    def update_location_bestmatch(self, start, end, flank=4, threshold=8):
+        location = self.update_location(start, end, flank=flank, threshold=threshold)  
+        if location[2]:
+            if len(location[0]) == 1:
+            # easy case! 
+                return(location[0][0], location[1][0])
+            else:
+                # looking for the closest match
+                diff = [abs(l - start) for l in location[0]]
+                i = diff.index(min(diff))
+                return(location[0][i], location[1][i])                
 
     def identify_seq_location(self, seq):
         new_starts = [m.start() + 1 for m in re.finditer('(?=%s)'
